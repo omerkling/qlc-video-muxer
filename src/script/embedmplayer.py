@@ -7,8 +7,9 @@ import liblo
 import fcntl
 import os
 import select
+import shlex
 import gi
-gi.require_version('Gst', '1.0')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkX11
 
 class oscbridge(liblo.ServerThread):
@@ -17,24 +18,24 @@ class oscbridge(liblo.ServerThread):
 
         self.__fifoname = fifo
         self.window = window
-        self.drawingArea = Gtk.DrawingArea()
-        self.window.add(self.drawingArea)
         
         os.mkfifo(self.__fifoname)
         cmd = [
             'mplayer',
-            '--ao=pulse',
-            #'--fixed-vo',
-            '--idle',
-            '--slave',
-            '--input=file=%s'%(self.__fifoname),
-            '--volume=0',
-            '--wid=%s' % windowId
+            '-ao', 'pulse,alsa,',
+            '-fixed-vo',
+            '-idle',
+            '-slave',
+            '-input', 'file=%s' % (self.__fifoname),
+            '-volume', '0',
+            '-wid', '%s' % windowId,
         ]
         if extraArgs is not None:
             cmd += extraArgs
         print("Opening mplayer")
+        #self.__proc = subprocess.Popen(shlex.split("mplayer -idle -slave -input file=%s -volume 0 -wid %s" % (self.__fifoname, windowId)))
         self.__proc = subprocess.Popen(cmd)
+        print(self.__proc.args)
         self.__fifo = open(self.__fifoname, 'w')
         self.__fifo.flush()
      
