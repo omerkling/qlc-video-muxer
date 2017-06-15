@@ -45,11 +45,12 @@ class oscbridge(liblo.ServerThread):
         self.add_method("/%i/dmx/%i"%(universe,channel+3), 'f', self.cb_prev)
         self.add_method("/%i/dmx/%i"%(universe,channel+4), 'f', self.cb_volume)
         self.add_method("/%i/dmx/%i"%(universe,channel+5), 'f', self.cb_fullscreen)
-        #self.add_method("/%i/dmx/%i"%(universe,channel+6), 'f', self.cb_brightness)
+        self.add_method("/%i/dmx/%i"%(universe,channel+6), 'f', self.cb_brightness)
         #self.add_method("/%i/dmx/%i"%(universe,channel+7), 'f', self.cb_contrast)
         #self.add_method("/%i/dmx/%i"%(universe,channel+8), 'f', self.cb_gamma)
         #self.add_method("/%i/dmx/%i"%(universe,channel+9), 'f', self.cb_hue)
         #self.add_method("/%i/dmx/%i"%(universe,channel+10), 'f', self.cb_saturation)
+        self.add_method("/%i/dmx/%i"%(universe,channel+11), 'f', self.cb_load_overlay)
 
         self.add_method(None, None, self.osc_fallback)
         
@@ -89,6 +90,17 @@ class oscbridge(liblo.ServerThread):
 
         print("loading file: %s / %s" % (self.index, len(self.files) - 1))
         self.__tomplayer('pausing_keep loadfile "%s"' % (self.files[self.index]))
+
+    def __loadoverlay(self, index):
+        print("request loading overlay: %s" % index)
+        self.index = max(min(index, len(self.files)-1), 0)
+        if len(self.files) is 0:
+            print ("no files loaded")
+            return
+
+        print("loading file: %s / %s" % (self.index, len(self.files) - 1))
+        self.__tomplayer('pausing_keep overlay_remove 1')
+        self.__tomplayer('pausing_keep overlay_add "%s" 1 600 400 FFFFFFFF' % (self.files[self.index]))
 
     def __tomplayer(self, msg):
         m = '%s\n' % (msg)
@@ -130,27 +142,27 @@ class oscbridge(liblo.ServerThread):
     def cb_brightness(self, path, args):
         print("%s:%s %s" % (path, 'cb_brightness', args))
         self.brightness = int(round(args[0]*200)-100)
-        self.__tomplayer('set_property brightness %d'%(self.brightness))
+        self.__tomplayer('pausing_keep_force set_property brightness %d'%(self.brightness))
 
     def cb_contrast(self, path, args):
         print("%s:%s %s" % (path, 'cb_contrast', args))
         self.contrast = int(round(args[0]*200)-100)
-        self.__tomplayer('set_property contrast %d'%(self.contrast))
+        self.__tomplayer('pausing_keep_force set_property contrast %d'%(self.contrast))
 
     def cb_gamma(self, path, args):
         print("%s:%s %s" % (path, 'cb_gamma', args))
         self.gamma = int(round(args[0]*200)-100)
-        self.__tomplayer('set_property gamma %d'%(self.gamma))
+        self.__tomplayer('pausing_keep_force set_property gamma %d'%(self.gamma))
 
     def cb_hue(self, path, args):
         print("%s:%s %s" % (path, 'cb_hue', args))
         self.hue = int(round(args[0]*200)-100)
-        self.__tomplayer('set_property hue %d'%(self.hue))
+        self.__tomplayer('pausing_keep_force set_property hue %d'%(self.hue))
 
     def cb_saturation(self, path, args):
         print("%s:%s %s" % (path, 'cb_saturation', args))
         self.saturation = int(round(args[0]*200)-100)
-        self.__tomplayer('set_property saturation %d'%(self.saturation))
+        self.__tomplayer('pausing_keep_force set_property saturation %d'%(self.saturation))
 
     def cb_volume(self, path, args):
         print("%s:%s %s" % (path, 'cb_volume', args))
@@ -160,10 +172,13 @@ class oscbridge(liblo.ServerThread):
          
     def cb_fullscreen(self, path, args):
         print("%s:%s %s" % (path, 'cb_fullscreen', args))
-        if args[0] > 0.5:
+        if args[0] == 1.0:
             self.window.fullscreen()
         else:
             self.window.unfullscreen()
+    def cb_load_overlay(self, path, args):
+        print("%s:%s %s" % (path, 'cb_fullscreen', args))        
+        self.__loadoverlay(round(args[0] * 255))
 
     def osc_fallback(self, path, args):
         print ("oscbridge: received unknown message", path, args)
