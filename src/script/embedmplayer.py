@@ -46,11 +46,10 @@ class oscbridge(liblo.ServerThread):
         self.add_method("/%i/dmx/%i"%(universe,channel+4), 'f', self.cb_volume)
         self.add_method("/%i/dmx/%i"%(universe,channel+5), 'f', self.cb_fullscreen)
         self.add_method("/%i/dmx/%i"%(universe,channel+6), 'f', self.cb_brightness)
-        #self.add_method("/%i/dmx/%i"%(universe,channel+7), 'f', self.cb_contrast)
-        #self.add_method("/%i/dmx/%i"%(universe,channel+8), 'f', self.cb_gamma)
-        #self.add_method("/%i/dmx/%i"%(universe,channel+9), 'f', self.cb_hue)
-        #self.add_method("/%i/dmx/%i"%(universe,channel+10), 'f', self.cb_saturation)
-        self.add_method("/%i/dmx/%i"%(universe,channel+11), 'f', self.cb_load_overlay)
+        self.add_method("/%i/dmx/%i"%(universe,channel+7), 'f', self.cb_contrast)
+        self.add_method("/%i/dmx/%i"%(universe,channel+8), 'f', self.cb_gamma)
+        self.add_method("/%i/dmx/%i"%(universe,channel+9), 'f', self.cb_hue)
+        self.add_method("/%i/dmx/%i"%(universe,channel+10), 'f', self.cb_saturation)
 
         self.add_method(None, None, self.osc_fallback)
         
@@ -89,18 +88,8 @@ class oscbridge(liblo.ServerThread):
             return
 
         print("loading file: %s / %s" % (self.index, len(self.files) - 1))
-        self.__tomplayer('pausing_keep loadfile "%s"' % (self.files[self.index]))
-
-    def __loadoverlay(self, index):
-        print("request loading overlay: %s" % index)
-        self.index = max(min(index, len(self.files)-1), 0)
-        if len(self.files) is 0:
-            print ("no files loaded")
-            return
-
-        print("loading file: %s / %s" % (self.index, len(self.files) - 1))
-        self.__tomplayer('pausing_keep overlay_remove 1')
-        self.__tomplayer('pausing_keep overlay_add "%s" 1 600 400 FFFFFFFF' % (self.files[self.index]))
+        self.__tomplayer('pausing loadfile "%s"' % (self.files[self.index]))
+        self.playing = False
 
     def __tomplayer(self, msg):
         m = '%s\n' % (msg)
@@ -176,9 +165,6 @@ class oscbridge(liblo.ServerThread):
             self.window.fullscreen()
         else:
             self.window.unfullscreen()
-    def cb_load_overlay(self, path, args):
-        print("%s:%s %s" % (path, 'cb_fullscreen', args))        
-        self.__loadoverlay(round(args[0] * 255))
 
     def osc_fallback(self, path, args):
         print ("oscbridge: received unknown message", path, args)
