@@ -108,10 +108,12 @@ class oscbridge(liblo.ServerThread):
 
     def cb_play(self, path, args):
         print("%s:%s %s" % (path, 'cb_play', args))
-        if args[0] == 1.0:            
-            self.__tomplayer("set_property pause 0")
-        else:                 
-            self.__tomplayer("set_property pause 1")
+        if args[0] == 1.0 and not self.playing:            
+            self.__tomplayer("pause")
+            self.playing = True
+        elif args[0] < 1.0 and self.playing:                 
+            self.__tomplayer("pause")
+            self.playing = False
 
     def cb_next(self, path, args):
         print("%s:%s %s" % (path, 'cb_next', args))
