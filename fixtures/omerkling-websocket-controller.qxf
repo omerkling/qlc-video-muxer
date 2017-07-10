@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.11.0</Version>
+  <Author>Owen Merkling</Author>
+ </Creator>
+ <Manufacturer>omerkling</Manufacturer>
+ <Model>websocket-controller</Model>
+ <Type>Other</Type>
+ <Channel Name="Index">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="255">Index</Capability>
+ </Channel>
+ <Channel Name="Next">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="0">None</Capability>
+  <Capability Min="255" Max="255">Next</Capability>
+ </Channel>
+ <Channel Name="Prev">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="0">None</Capability>
+  <Capability Min="255" Max="255">Prev</Capability>
+ </Channel>
+ <Channel Name="Reset">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="0">None</Capability>
+  <Capability Min="255" Max="255">Reset</Capability>
+ </Channel>
+ <Mode Name="Default">
+  <Physical>
+   <Bulb Type="" Lumens="0" ColourTemperature="0"/>
+   <Dimensions Weight="0" Width="0" Height="0" Depth="0"/>
+   <Lens Name="Other" DegreesMin="0" DegreesMax="0"/>
+   <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+   <Technical PowerConsumption="0" DmxConnector="5-pin"/>
+  </Physical>
+  <Channel Number="0">Index</Channel>
+  <Channel Number="1">Next</Channel>
+  <Channel Number="2">Prev</Channel>
+  <Channel Number="3">Reset</Channel>
+ </Mode>
+</FixtureDefinition>

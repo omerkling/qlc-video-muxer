@@ -21,6 +21,7 @@ class oscbridge(liblo.ServerThread):
         self.add_method("/%i/dmx/%i"%(universe,channel), 'f', self.cb_index)
         self.add_method("/%i/dmx/%i"%(universe,channel+1), 'f', self.cb_next)
         self.add_method("/%i/dmx/%i"%(universe,channel+2), 'f', self.cb_prev)
+        self.add_method("/%i/dmx/%i"%(universe,channel+3), 'f', self.cb_reset)
 
         self.add_method(None, None, self.osc_fallback)
         
@@ -55,6 +56,11 @@ class oscbridge(liblo.ServerThread):
         print("%s:%s %s" % (path, 'cb_index', args))
         self.__toclients("goto:%d" % round(args[0] * 255))
         
+    def cb_reset(self, path, args):
+        print("%s:%s %s" % (path, 'cb_reset', args))
+        if args[0] == 1:
+            self.__toclients("goto:0")
+        
     def osc_fallback(self, path, args):
         print ("oscbridge: received unknown message", path, args)
 
@@ -86,7 +92,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Bridge program for controlling mplayer via slave mode from QLCPlus via the OSC plug in")
     parser.add_argument('--universe', action="store", default=1, type=int)
-    parser.add_argument('--port', action="store", default=9001, type=int)
+    parser.add_argument('--port', action="store", default=9000, type=int)
     parser.add_argument('--channel', action="store", default=1, type=int)
     parser.add_argument('--server', action="store", default="ws://localhost:8765")
 
