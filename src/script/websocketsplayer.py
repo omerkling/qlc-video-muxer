@@ -13,7 +13,6 @@ class oscbridge(liblo.ServerThread):
     def __init__(self, websocket, universe, channel, port):
         super().__init__(port)
         
-        self.index = 0
         self.loop = None
 
         print("Creating OSC Bridge")
@@ -39,25 +38,22 @@ class oscbridge(liblo.ServerThread):
                 print("Exception sending message")
         self.loop.run_until_complete(sendmsg())                
                 
-    def __loadfile(self, index):
-        print("request loading file: %s" % index)
-        self.index = max(min(index, 255), 0)
-        self.__toclients('index "%s"' % self.index)
-
     def stop(self):
         super().stop()
 
     def cb_next(self, path, args):
         print("%s:%s %s" % (path, 'cb_next', args))
-        self.__loadfile(self.index+1)
+        if args[0] == 1:
+            self.__toclients("goto:next")
             
     def cb_prev(self, path, args):
         print("%s:%s %s" % (path, 'cb_prev', args))
-        self.__loadfile(self.index-1)
+        if args[0] == 1:
+            self.__toclients("goto:prev")
             
     def cb_index(self, path, args):
         print("%s:%s %s" % (path, 'cb_index', args))
-        self.__loadfile(round(args[0] * 255))
+        self.__toclients("goto:%d" % round(args[0] * 255))
         
     def osc_fallback(self, path, args):
         print ("oscbridge: received unknown message", path, args)
