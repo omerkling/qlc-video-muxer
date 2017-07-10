@@ -1,0 +1,30 @@
+{
+  "name": "Google Slides Remote",
+  "description": "Uses a websocket server to control Google Slides",
+  "version": "0.3.2",
+  "manifest_version": 2,
+
+  "sockets": {
+    "tcp": {
+      "connect": "*"
+    },
+
+    "tcpServer": {
+      "listen": "*"
+    }
+  },
+
+    "externally_connectable": {
+       "matches": [
+         "https://*.google.com/*"
+       ]
+    },
+
+  "app": {
+    "background": {
+        "scripts": ["background.js",
+                    "http.js",
+                    "sha1.js"]
+    }
+  }
+}

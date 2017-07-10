@@ -1,0 +1,22 @@
+{
+  "name": "Google Slides Remote",
+  "description": "Connects to the websocket proxy to receive remote messages",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["https://docs.google.com/presentation/*"],
+      "js": ["remotecontrol.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {                    // optional
+      "32": "icon_off.png"           // optional
+    },
+    "default_title": "Preso Remote"      // optional; shown in tooltip
+  },
+  "externally_connectable": {
+    "matches": ["https://docs.google.com/presentation/*"]
+  },
+  "permissions": ["https://docs.google.com/presentation/*"]
+}

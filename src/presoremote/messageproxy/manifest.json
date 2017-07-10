@@ -1,0 +1,30 @@
+{
+  "name": "Google Remote Control Message Proxy",
+  "description": "Proxies websocket messages to Google internal messaging",
+  "version": "0.0.1",
+  "manifest_version": 2,
+
+  "sockets": {
+    "tcp": {
+      "connect": "*"
+    },
+
+    "tcpServer": {
+      "listen": "*"
+    }
+  },
+
+  "externally_connectable": {
+     "matches": [
+       "https://docs.google.com/presentation/*"
+     ]
+  },
+
+  "app": {
+    "background": {
+        "scripts": ["background.js",
+                    "http.js",
+                    "sha1.js"]
+    }
+  }
+}
