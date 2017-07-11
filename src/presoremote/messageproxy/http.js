@@ -100,6 +100,7 @@ PSocket.prototype.close = function() {
   
 // Http response code strings.
 var responseMap = {
+  101: 'Switching Protocols',
   200: 'OK',
   301: 'Moved Permanently',
   304: 'Not Modified',
@@ -581,7 +582,7 @@ WebSocketServer.prototype = {
   __proto__: EventSource.prototype,
 
   upgradeToWebSocket_: function(request) {
-    if (request.headers['Upgrade'] != 'websocket' ||
+    if (request.headers['Upgrade'].toLowerCase() != 'websocket' ||
         !request.headers['Sec-WebSocket-Key']) {
       return false;
     }

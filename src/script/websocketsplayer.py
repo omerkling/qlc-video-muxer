@@ -94,7 +94,7 @@ if __name__ == "__main__":
     parser.add_argument('--universe', action="store", default=1, type=int)
     parser.add_argument('--port', action="store", default=9000, type=int)
     parser.add_argument('--channel', action="store", default=1, type=int)
-    parser.add_argument('--server', action="store", default="ws://localhost:8765")
+    parser.add_argument('--server', action="store", default="ws://localhost:9999")
 
     args = parser.parse_args()  
     application = Application(args)

@@ -1,6 +1,7 @@
 console.log("Preso remote loaded");
 function onLoad() {
-  var connectionPort = chrome.runtime.connect("fofjlmofilnhgaimkpaafphjdibnnohm", {name: "presoremote"});
+  var EXTENSION_KEY = "fofjlmofilnhgaimkpaafphjdibnnohm";
+  var connectionPort = chrome.runtime.connect(EXTENSION_KEY, {name: "presoremote"});
   // var connectionPort = chrome.runtime.connect();
 
   console.log("Made remote connection", connectionPort);
